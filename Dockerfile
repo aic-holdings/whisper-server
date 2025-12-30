@@ -1,5 +1,8 @@
-# Minimal test to see if container starts at all
+# Minimal test to verify Coolify deployment works
 FROM python:3.11-slim
+
+# Explicitly disable health checks - let Coolify/Traefik handle it
+HEALTHCHECK NONE
 
 RUN pip install --no-cache-dir fastapi uvicorn
 
