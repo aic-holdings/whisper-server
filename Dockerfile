@@ -1,14 +1,10 @@
-# Minimal test to verify Coolify deployment works
-FROM python:3.11-slim
+# Ultra-minimal test - just nginx
+FROM nginx:alpine
 
-# Explicitly disable health checks - let Coolify/Traefik handle it
-HEALTHCHECK NONE
+# Replace default page with simple health check
+RUN echo '{"status":"ok","service":"whisper-test"}' > /usr/share/nginx/html/health.json
+RUN echo 'server { listen 8000; location /health { default_type application/json; alias /usr/share/nginx/html/health.json; } location / { return 200 "whisper placeholder"; } }' > /etc/nginx/conf.d/default.conf
 
-RUN pip install --no-cache-dir fastapi uvicorn
-
-COPY main.py /app/main.py
-
-WORKDIR /app
 EXPOSE 8000
 
-CMD ["uvicorn", "main:app", "--host", "0.0.0.0", "--port", "8000"]
+CMD ["nginx", "-g", "daemon off;"]
