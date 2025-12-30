@@ -1,23 +1,11 @@
-# Self-hosted faster-whisper-server for audio transcription
-# OpenAI-compatible API at /v1/audio/transcriptions
-#
-# Based on: https://github.com/fedirz/faster-whisper-server
+# Minimal test to see if container starts at all
+FROM python:3.11-slim
 
-FROM fedirz/faster-whisper-server:latest-cpu
+RUN pip install --no-cache-dir fastapi uvicorn
 
-# Use tiny model for fast startup (smallest possible)
-ENV WHISPER__MODEL=Systran/faster-whisper-tiny.en
-ENV WHISPER__INFERENCE_DEVICE=cpu
-ENV WHISPER__COMPUTE_TYPE=int8
+COPY main.py /app/main.py
 
-# Server configuration
-ENV UVICORN_HOST=0.0.0.0
-ENV UVICORN_PORT=8000
-
-# Debug wrapper
-COPY entrypoint.sh /entrypoint.sh
-RUN chmod +x /entrypoint.sh
-
+WORKDIR /app
 EXPOSE 8000
 
-ENTRYPOINT ["/entrypoint.sh"]
+CMD ["uvicorn", "main:app", "--host", "0.0.0.0", "--port", "8000"]
