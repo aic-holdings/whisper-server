@@ -5,8 +5,8 @@
 
 FROM fedirz/faster-whisper-server:latest-cpu
 
-# Use base model for fast startup, upgrade to larger model later
-ENV WHISPER__MODEL=Systran/faster-whisper-base.en
+# Use tiny model for fast startup (smallest possible)
+ENV WHISPER__MODEL=Systran/faster-whisper-tiny.en
 ENV WHISPER__INFERENCE_DEVICE=cpu
 ENV WHISPER__COMPUTE_TYPE=int8
 
@@ -14,8 +14,8 @@ ENV WHISPER__COMPUTE_TYPE=int8
 ENV UVICORN_HOST=0.0.0.0
 ENV UVICORN_PORT=8000
 
-# Health check - longer start period for model download
-HEALTHCHECK --interval=30s --timeout=10s --start-period=300s --retries=5 \
-  CMD curl -sf http://localhost:8000/health || exit 1
+# Disable health check temporarily to see startup logs
+# HEALTHCHECK --interval=30s --timeout=10s --start-period=300s --retries=5 \
+#   CMD curl -sf http://localhost:8000/health || exit 1
 
 EXPOSE 8000
