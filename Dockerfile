@@ -14,8 +14,10 @@ ENV WHISPER__COMPUTE_TYPE=int8
 ENV UVICORN_HOST=0.0.0.0
 ENV UVICORN_PORT=8000
 
-# Disable health check temporarily to see startup logs
-# HEALTHCHECK --interval=30s --timeout=10s --start-period=300s --retries=5 \
-#   CMD curl -sf http://localhost:8000/health || exit 1
+# Debug wrapper
+COPY entrypoint.sh /entrypoint.sh
+RUN chmod +x /entrypoint.sh
 
 EXPOSE 8000
+
+ENTRYPOINT ["/entrypoint.sh"]
